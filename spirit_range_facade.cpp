@@ -3,7 +3,6 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <iterator>
 
 #include <boost/spirit/include/qi.hpp>
 
