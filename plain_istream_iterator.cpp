@@ -9,8 +9,9 @@ void separated_printer(std::string const& s) {
     typedef std::istream_iterator<T> ist_iter;
     std::istringstream ss(s);
     for (auto it = ist_iter(ss); it != ist_iter(); ++it) {
-        std::cout << "|" << *it << "|\n";
+        std::cout << "|" << *it << "| ";
     }
+    std::cout << "\n";
 }
     
 
