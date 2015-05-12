@@ -23,7 +23,7 @@ operator>>(std::istream& is, gga& g) {
         qi::double_ >> ',' >>
         qi::double_ >> ',' >> qi::char_ >> ',' >>
         qi::double_ >> ',' >> qi::char_ >> ',' >>
-        -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_ >> -qi::eol;
+        -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_;
         
     // construct a stream manipulator from this parser
     auto manip = qi::match(gga_parser, g);
