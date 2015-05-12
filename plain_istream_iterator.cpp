@@ -4,13 +4,15 @@
 #include <sstream>
 #include <iterator>
 
-template<typename T> using ist_iter = std::istream_iterator<T>;
+// use at least gcc 4.9 or compile errors will result:
+#include <range/v3/all.hpp>
 
 template<typename T>
 void separated_printer(std::string const& s) {
+    using namespace ranges::v3;
     std::istringstream ss(s);
-    for (auto it = ist_iter<T>(ss); it != ist_iter<T>(); ++it) {
-        std::cout << "|" << *it << "|\n";
+    for (T const& v : view::bounded(istream_range<T>(ss))) {
+        std::cout << "|" << v << "|\n";
     }
 }
     
