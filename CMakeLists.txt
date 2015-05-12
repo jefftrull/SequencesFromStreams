@@ -24,3 +24,6 @@ foreach( EXAMPLE
          plain_istream_iterator plain_istream_range )
   add_executable( ${EXAMPLE} ${EXAMPLE}.cpp )
 endforeach()
+
+add_executable( custom_stream_operator
+                custom_stream_operator.cpp nmea.cpp )
