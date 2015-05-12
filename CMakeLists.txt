@@ -13,7 +13,7 @@ include_directories( SYSTEM ${Boost_INCLUDE_DIRS} ${RANGE_V3}/include )
 
 if (CMAKE_COMPILER_IS_GNUCC OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang"))
   add_definitions(-Wall -Wextra -Werror)  # be conservative about checks
-  add_definitions(-std=c++0x)             # enable C++11
+  add_definitions(-g -std=c++1y)             # enable C++11
 else()
   # actually not known to work on any other compilers (MSVC!)
   message(FATAL_ERROR "please use gcc or clang to compile these examples")
@@ -30,3 +30,4 @@ add_executable( custom_stream_operator custom_stream_operator.cpp nmea.cpp )
 add_definitions( -DFUSION_MAX_VECTOR_SIZE=15 )
 
 add_executable( spirit_stream_operator spirit_stream_operator.cpp )
+add_executable( spirit_range_facade spirit_range_facade.cpp )
