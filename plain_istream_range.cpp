@@ -11,9 +11,10 @@ template<typename T>
 void separated_printer(std::string const& s) {
     using namespace ranges::v3;
     std::istringstream ss(s);
-    for (T const& v : view::bounded(istream_range<T>(ss))) {
-        std::cout << "|" << v << "| ";
-    }
+    ranges::for_each(istream_range<T>(ss),
+                     [](T const& v) {
+                         std::cout << "|" << v << "| ";
+                     });
     std::cout << "\n";
 }
     

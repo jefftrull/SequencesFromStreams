@@ -14,7 +14,8 @@ int main() {
 
     using namespace ranges::v3;
     std::istringstream ss(test);
-    for (gga const& g : view::bounded(istream_range<gga>(ss))) {
-        std::cout << g << "\n";
-    }
+    ranges::for_each(istream_range<gga>(ss),
+                     [](gga const& g) {
+                         std::cout << g << "\n";
+                     });
 }

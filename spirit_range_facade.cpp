@@ -98,8 +98,8 @@ int main() {
     std::istringstream ss(test);
     ss.unsetf(std::ios::skipws);
     using namespace ranges::v3;
-    gga_range gr(ss);
-    for (gga const& g : view::bounded(gr)) {
+    ranges::for_each(gga_range(ss),
+                     [](gga const& g) {
                          std::cout << g << "\n";
-    }
+                     });
 }
