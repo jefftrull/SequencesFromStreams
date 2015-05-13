@@ -4,8 +4,8 @@
 #include <sstream>
 
 #include <boost/spirit/include/qi.hpp>
-
-#include <range/v3/all.hpp>
+#include <boost/spirit/include/phoenix.hpp>
+#include <boost/coroutine/asymmetric_coroutine.hpp>
 
 #include "nmea.h"
 
@@ -15,9 +15,13 @@ typedef std::vector<gga_t> parse_result_t;
 struct nmea_parser : boost::spirit::qi::grammar<iter_t, 
                                                 parse_result_t()>
 {
-    nmea_parser() : nmea_parser::base_type(sentences)
+    typedef boost::coroutines::asymmetric_coroutine<gga_t>::push_type sink_t;
+
+    nmea_parser(sink_t& sink)
+        : nmea_parser::base_type(sentences), m_sink(sink)
     {
         using namespace boost::spirit;
+        namespace phx = boost::phoenix;
 
         gga_sentence =
             qi::lit("$GPGGA_T") >> ',' >> qi::int_ >> ',' >>
@@ -27,20 +31,24 @@ struct nmea_parser : boost::spirit::qi::grammar<iter_t,
             qi::double_ >> ',' >>
             qi::double_ >> ',' >> qi::char_ >> ',' >>
             qi::double_ >> ',' >> qi::char_ >> ',' >>
-            -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_ >> -qi::eol;
+            -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_;
 
         // define other "sentences" here
 
         // combine alternates
         sentences = *(gga_sentence   // | bwc_sentence | gll_sentence | ... )
-            );
+                      [phx::bind(&sink_t::operator(), phx::ref(m_sink), qi::_1)]
+                      >> -qi::eol);
 
     }
 
-    template<typename R> using Rule = boost::spirit::qi::rule<boost::spirit::istream_iterator, R()>;
-
+    template<typename R>
+    using Rule = boost::spirit::qi::rule<boost::spirit::istream_iterator, R()>;
     Rule<gga_t> gga_sentence;
     Rule<parse_result_t> sentences;
+
+    // destination for GGA sentences as they are parsed
+    sink_t& m_sink;
 
 };
 
@@ -55,14 +63,18 @@ int main() {
 
     std::istringstream ss(test);
     ss.unsetf(std::ios::skipws);
-    parse_result_t result;
-    iter_t beg(ss), end;
-    nmea_parser nmea;
-    if (!boost::spirit::qi::parse(beg, end, nmea, result)) {
-        std::cerr << "parse failed!\n";
-    } else {
-        for( gga_t const & g : result ) {
-            std::cout << g << "\n";
-        }
+    using namespace boost::coroutines;
+    asymmetric_coroutine<gga_t>::pull_type sequence(
+        [&ss](asymmetric_coroutine<gga_t>::push_type& sink) {
+            nmea_parser nmea(sink);
+            iter_t beg(ss), end;
+            parse_result_t result;
+            if (!boost::spirit::qi::parse(beg, end, nmea, result)) {
+                std::cerr << "parse failed!\n";
+            }
+        });
+
+    for (gga_t const& g : sequence) {
+        std::cout << g << "\n";
     }
 }
