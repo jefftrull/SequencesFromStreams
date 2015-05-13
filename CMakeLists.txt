@@ -29,5 +29,7 @@ add_executable( custom_stream_operator custom_stream_operator.cpp nmea.cpp )
 
 add_definitions( -DFUSION_MAX_VECTOR_SIZE=15 )
 
-add_executable( spirit_stream_operator spirit_stream_operator.cpp )
-add_executable( spirit_range_facade spirit_range_facade.cpp )
+foreach( EXAMPLE
+    spirit_stream_operator spirit_range_facade spirit_coroutine )
+  add_executable( ${EXAMPLE} ${EXAMPLE}.cpp )
+endforeach()
