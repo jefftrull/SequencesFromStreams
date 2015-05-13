@@ -10,10 +10,8 @@
 #include "nmea.h"
 
 typedef boost::spirit::istream_iterator iter_t;
-typedef std::vector<gga_t> parse_result_t;
 
-struct nmea_parser : boost::spirit::qi::grammar<iter_t, 
-                                                parse_result_t()>
+struct nmea_parser : boost::spirit::qi::grammar<iter_t>
 {
     typedef boost::coroutines::asymmetric_coroutine<gga_t>::push_type sink_t;
 
@@ -42,10 +40,8 @@ struct nmea_parser : boost::spirit::qi::grammar<iter_t,
 
     }
 
-    template<typename R>
-    using Rule = boost::spirit::qi::rule<boost::spirit::istream_iterator, R()>;
-    Rule<gga_t> gga_sentence;
-    Rule<parse_result_t> sentences;
+    boost::spirit::qi::rule<boost::spirit::istream_iterator, gga_t()> gga_sentence;
+    boost::spirit::qi::rule<boost::spirit::istream_iterator> sentences;
 
     // destination for GGA sentences as they are parsed
     sink_t& m_sink;
@@ -68,8 +64,7 @@ int main() {
         [&ss](asymmetric_coroutine<gga_t>::push_type& sink) {
             nmea_parser nmea(sink);
             iter_t beg(ss), end;
-            parse_result_t result;
-            if (!boost::spirit::qi::parse(beg, end, nmea, result)) {
+            if (!boost::spirit::qi::parse(beg, end, nmea)) {
                 std::cerr << "parse failed!\n";
             }
         });
