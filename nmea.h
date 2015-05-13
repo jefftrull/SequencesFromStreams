@@ -7,7 +7,7 @@
 
 // NMEA "sentence" describing GPS coordinates
 // $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,,*47
-struct gga {
+struct gga_t {
     int                  timestamp;
     double               latitude;
     char                 lat_hemi;
@@ -26,12 +26,12 @@ struct gga {
 };
 
 // declare stream operators
-std::istream& operator>>(std::istream&, gga&);
-std::ostream& operator<<(std::ostream&, gga const&);
+std::istream& operator>>(std::istream&, gga_t&);
+std::ostream& operator<<(std::ostream&, gga_t const&);
 
-// adapt gga to make it accessible to Fusion
+// adapt gga_t to make it accessible to Fusion
 BOOST_FUSION_ADAPT_STRUCT(
-    gga,
+    gga_t,
     (int,    timestamp)
     (double, latitude)
     (char,   lat_hemi)

@@ -14,8 +14,8 @@ int main() {
 
     using namespace ranges::v3;
     std::istringstream ss(test);
-    ranges::for_each(istream_range<gga>(ss),
-                     [](gga const& g) {
+    ranges::for_each(istream_range<gga_t>(ss),
+                     [](gga_t const& g) {
                          std::cout << g << "\n";
                      });
 }

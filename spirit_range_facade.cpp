@@ -11,7 +11,7 @@
 #include "nmea.h"
 
 // create a Range that (underneath) uses Spirit to parse the "next" value
-class gga_range : public ranges::range_facade<gga_range>
+class gga_range_t : public ranges::range_facade<gga_range_t>
 {
     friend ranges::range_access;
     struct cursor;
@@ -20,7 +20,7 @@ class gga_range : public ranges::range_facade<gga_range>
 
     typedef boost::spirit::istream_iterator iter_t;
 
-    gga_range(std::istream& is) : m_stream(&is), m_it(*m_stream), m_parse_good(true) {
+    gga_range_t(std::istream& is) : m_stream(&is), m_it(*m_stream), m_parse_good(true) {
         using namespace boost::spirit;
         m_parser =
             qi::lit("$GPGGA") >> ',' >> qi::int_ >> ',' >>
@@ -37,7 +37,7 @@ class gga_range : public ranges::range_facade<gga_range>
         return cursor(*this);
     }
 
-    gga cached() const {
+    gga_t cached() const {
         return m_g;
     }
 
@@ -46,17 +46,17 @@ class gga_range : public ranges::range_facade<gga_range>
         return !m_parse_good || !m_stream;
     }
         
-    gga current() const {
+    gga_t current() const {
         return m_g;
     }
 
 
 private:
     std::istream* m_stream;
-    gga m_g;
+    gga_t m_g;
     iter_t m_it;
     bool m_parse_good;
-    boost::spirit::qi::rule<iter_t, gga()> m_parser;
+    boost::spirit::qi::rule<iter_t, gga_t()> m_parser;
 
     void next() {
         m_parse_good = boost::spirit::qi::parse(m_it, iter_t(), m_parser, m_g);
@@ -64,7 +64,7 @@ private:
 
     struct cursor {
         cursor(void) = default;
-        explicit cursor(gga_range& rng) : m_rng(&rng) {
+        explicit cursor(gga_range_t& rng) : m_rng(&rng) {
             next();    // to load the first value
         }
 
@@ -72,7 +72,7 @@ private:
             m_rng->next();
         }
 
-        gga current() const {
+        gga_t current() const {
             return m_rng->cached();
         }
 
@@ -80,13 +80,13 @@ private:
             return m_rng->done();
         }
 
-        gga_range* m_rng;
+        gga_range_t* m_rng;
     };
 };
 
 
 
-std::ostream& operator<<(std::ostream& os, gga const& g) {
+std::ostream& operator<<(std::ostream& os, gga_t const& g) {
     os << '(' << g.latitude << g.lat_hemi << ',' << g.longitude << g.long_hemi << ')';
     return os;
 }
@@ -98,8 +98,8 @@ int main() {
     std::istringstream ss(test);
     ss.unsetf(std::ios::skipws);
     using namespace ranges::v3;
-    ranges::for_each(gga_range(ss),
-                     [](gga const& g) {
+    ranges::for_each(gga_range_t(ss),
+                     [](gga_t const& g) {
                          std::cout << g << "\n";
                      });
 }

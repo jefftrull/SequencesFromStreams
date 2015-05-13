@@ -12,10 +12,10 @@
 
 // supply our own stream operators here that match the declarations
 std::istream&
-operator>>(std::istream& is, gga& g) {
+operator>>(std::istream& is, gga_t& g) {
     using namespace boost::spirit;
 
-    qi::rule<istream_iterator, gga()> gga_parser =
+    qi::rule<istream_iterator, gga_t()> gga_parser =
         qi::lit("$GPGGA") >> ',' >> qi::int_ >> ',' >>
         qi::double_ >> ',' >> qi::char_("NS") >> ',' >>
         qi::double_ >> ',' >> qi::char_("EW") >> ',' >>
@@ -32,7 +32,7 @@ operator>>(std::istream& is, gga& g) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream& os, gga const& g) {
+std::ostream& operator<<(std::ostream& os, gga_t const& g) {
     os << '(' << g.latitude << g.lat_hemi << ',' << g.longitude << g.long_hemi << ')';
     return os;
 }
@@ -44,8 +44,8 @@ int main() {
     std::istringstream ss(test);
     ss.unsetf(std::ios::skipws);
     using namespace ranges::v3;
-    ranges::for_each(istream_range<gga>(ss),
-                     [](gga const& g) {
+    ranges::for_each(istream_range<gga_t>(ss),
+                     [](gga_t const& g) {
                          std::cout << g << "\n";
                      });
 

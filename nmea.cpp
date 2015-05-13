@@ -15,7 +15,7 @@ std::istream& comma(std::istream& is) {
 }
 
 std::istream&
-operator>>(std::istream& is, gga& g) {
+operator>>(std::istream& is, gga_t& g) {
     using namespace std;
 
     // define some temporaries
@@ -73,7 +73,7 @@ operator>>(std::istream& is, gga& g) {
     return is;
 }
 
-std::ostream& operator<<(std::ostream& os, gga const& g) {
+std::ostream& operator<<(std::ostream& os, gga_t const& g) {
     os << '(' << g.latitude << g.lat_hemi << ',' << g.longitude << g.long_hemi << ')';
     return os;
 }
