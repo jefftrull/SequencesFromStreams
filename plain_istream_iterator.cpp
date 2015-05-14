@@ -6,9 +6,9 @@
 
 template<typename T>
 void separated_printer(std::string const& s) {
-    typedef std::istream_iterator<T> ist_iter;
+    typedef std::istream_iterator<T> iter_t;
     std::istringstream ss(s);
-    for (auto it = ist_iter(ss); it != ist_iter(); ++it) {
+    for (auto it = iter_t(ss); it != iter_t(); ++it) {
         std::cout << "|" << *it << "| ";
     }
     std::cout << "\n";
@@ -17,8 +17,8 @@ void separated_printer(std::string const& s) {
 
 int main() {
     std::string test("123 ABC");
-    separated_printer<char>(test);
-    separated_printer<std::string>(test);
-    separated_printer<int>(test);
+    separated_printer<char>(test);        // |1| |2| |3| |A| |B| |C|
+    separated_printer<std::string>(test); // |123| |ABC|
+    separated_printer<int>(test);         // |123|
     
 }

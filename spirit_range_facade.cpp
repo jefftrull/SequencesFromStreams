@@ -33,6 +33,7 @@ class gga_range_t : public ranges::range_facade<gga_range_t>
             -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_ >> -qi::eol;
     }
 
+private:
     cursor begin_cursor() {
         return cursor(*this);
     }
@@ -45,13 +46,7 @@ class gga_range_t : public ranges::range_facade<gga_range_t>
         // EOF or something I don't recognize
         return !m_parse_good || !m_stream;
     }
-        
-    gga_t current() const {
-        return m_g;
-    }
 
-
-private:
     std::istream* m_stream;
     gga_t m_g;
     iter_t m_it;
