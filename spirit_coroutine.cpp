@@ -22,14 +22,14 @@ struct nmea_parser : boost::spirit::qi::grammar<iter_t>
         namespace phx = boost::phoenix;
 
         gga_sentence =
-            qi::lit("$GPGGA_T") >> ',' >> qi::int_ >> ',' >>
-            qi::double_ >> ',' >> qi::char_("NS") >> ',' >>
-            qi::double_ >> ',' >> qi::char_("EW") >> ',' >>
-            qi::int_ >> ',' >> qi::int_ >> ',' >>
-            qi::double_ >> ',' >>
-            qi::double_ >> ',' >> qi::char_ >> ',' >>
-            qi::double_ >> ',' >> qi::char_ >> ',' >>
-            -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_;
+            qi::lit("$GPGGA_T") > ',' > qi::int_ > ',' >
+            qi::double_ > ',' > qi::char_("NS") > ',' >
+            qi::double_ > ',' > qi::char_("EW") > ',' >
+            qi::int_ > ',' > qi::int_ > ',' >
+            qi::double_ > ',' >
+            qi::double_ > ',' > qi::char_ > ',' >
+            qi::double_ > ',' > qi::char_ > ',' >
+            -qi::int_ > ',' > -qi::int_ > ",*" > qi::int_;
 
         // define other "sentences" here
 
