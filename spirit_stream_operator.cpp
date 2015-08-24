@@ -14,19 +14,20 @@
 std::istream&
 operator>>(std::istream& is, gga_t& g) {
     using namespace boost::spirit;
+    using namespace boost::spirit::qi;
 
-    qi::rule<istream_iterator, gga_t()> gga_parser =
-        qi::lit("$GPGGA") >> ',' >> qi::int_ >> ',' >>
-        qi::double_ >> ',' >> qi::char_("NS") >> ',' >>
-        qi::double_ >> ',' >> qi::char_("EW") >> ',' >>
-        qi::int_ >> ',' >> qi::int_ >> ',' >>
-        qi::double_ >> ',' >>
-        qi::double_ >> ',' >> qi::char_ >> ',' >>
-        qi::double_ >> ',' >> qi::char_ >> ',' >>
-        -qi::int_ >> ',' >> -qi::int_ >> ",*" >> qi::int_;
+    rule<istream_iterator, gga_t()> gga_parser =
+        lit("$GPGGA") > ',' > int_ > ',' >
+        double_ > ',' > char_("NS") > ',' >
+        double_ > ',' > char_("EW") > ',' >
+        int_ > ',' > int_ > ',' >
+        double_ > ',' >
+        double_ > ',' > char_ > ',' >
+        double_ > ',' > char_ > ',' >
+        -int_ > ',' > -int_ > ",*" > int_;
         
     // construct a stream manipulator from this parser
-    auto manip = qi::match(gga_parser, g);
+    auto manip = match(gga_parser, g);
     is >> manip;
 
     return is;
