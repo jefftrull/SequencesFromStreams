@@ -11,7 +11,7 @@
 #include "nmea.h"
 
 // create a Range that (underneath) uses Spirit to parse the "next" value
-class gga_range_t : public ranges::range_facade<gga_range_t>
+class gga_range_t : public ranges::view_facade<gga_range_t>
 {
     friend ranges::range_access;
     struct cursor;
