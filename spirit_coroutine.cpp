@@ -5,7 +5,7 @@
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
-#include <boost/coroutine/asymmetric_coroutine.hpp>
+#include <boost/coroutine2/all.hpp>
 
 #include "nmea.h"
 
@@ -13,7 +13,7 @@ typedef boost::spirit::istream_iterator iter_t;
 
 struct nmea_parser : boost::spirit::qi::grammar<iter_t>
 {
-    typedef boost::coroutines::asymmetric_coroutine<gga_t>::push_type sink_t;
+    typedef boost::coroutines2::asymmetric_coroutine<gga_t>::push_type sink_t;
 
     nmea_parser(sink_t& sink)
         : nmea_parser::base_type(sentences), m_sink(sink)
@@ -34,8 +34,10 @@ struct nmea_parser : boost::spirit::qi::grammar<iter_t>
         // define other "sentences" here
 
         // combine alternates
+        // (get the right sink member operator first to avoid ambiguous overload)
+        typedef sink_t & (sink_t::*oper_t)(gga_t const&);
         sentences = *(gga_sentence   // | bwc_sentence | gll_sentence | ... )
-                      [phx::bind(&sink_t::operator(), phx::ref(m_sink), qi::_1)]
+                      [phx::bind(static_cast<oper_t>(&sink_t::operator()), phx::ref(m_sink), qi::_1)]
                       >> -qi::eol);
 
     }
@@ -59,7 +61,7 @@ int main() {
 
     std::istringstream ss(test);
     ss.unsetf(std::ios::skipws);
-    using namespace boost::coroutines;
+    using namespace boost::coroutines2;
     asymmetric_coroutine<gga_t>::pull_type sequence(
         [&ss](asymmetric_coroutine<gga_t>::push_type& sink) {
             nmea_parser nmea(sink);
