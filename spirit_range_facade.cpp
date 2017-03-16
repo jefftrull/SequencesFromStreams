@@ -67,11 +67,11 @@ private:
             m_rng->next();
         }
 
-        gga_t current() const {
+        gga_t read() const {
             return m_rng->cached();
         }
 
-        bool done() const {
+        bool equal(ranges::v3::default_sentinel) const {
             return m_rng->done();
         }
 
