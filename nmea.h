@@ -1,6 +1,6 @@
 // definitions for types involved in implementing the NMEA protocol for GPS devices
 
-#include <iostream>
+#include <iosfwd>
 
 #include <boost/optional.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
