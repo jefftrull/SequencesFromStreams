@@ -7,6 +7,7 @@
 #include <boost/spirit/include/qi.hpp>
 
 #include <range/v3/all.hpp>
+#include <range/v3/iterator/default_sentinel.hpp>
 
 #include "nmea.h"
 
@@ -71,7 +72,7 @@ private:
             return m_rng->cached();
         }
 
-        bool equal(ranges::v3::default_sentinel) const {
+        bool equal(ranges::v3::default_sentinel_t) const {
             return m_rng->done();
         }
 
